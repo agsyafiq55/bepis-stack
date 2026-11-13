@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# bepis-stack bootstrap: deps → link ~/.claude → plugins → doctor.
+# bepis-stack bootstrap: deps → sync into ~/.claude → plugins → doctor.
 #
 #   ./install.sh                # full setup
 #   ./install.sh --dry-run      # show what would happen
@@ -37,7 +37,7 @@ fi
 
 S="$SELF_DIR/scripts"
 bash "$S/deps.sh"
-bash "$S/link.sh"
+bash "$S/sync.sh"
 if [ "$WITH_PLUGINS" = 1 ]; then bash "$S/plugins.sh"; fi
 if [ "$DRY_RUN" = 1 ]; then
   echo; echo "Dry run complete; nothing was changed."

@@ -38,7 +38,7 @@ confirm() {
   [[ "$reply" =~ ^[Yy]$ ]]
 }
 
-# Entries in claude/ that get linked into ~/.claude (top level only).
+# Entries in claude/ that get synced into ~/.claude (top level only).
 managed_entries() {
   local p
   for p in "$CLAUDE_SRC"/* "$CLAUDE_SRC"/.[!.]*; do

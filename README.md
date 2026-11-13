@@ -20,7 +20,12 @@ Flags: `--dry-run` (show actions only), `--no-plugins` (skip plugin installs).
 
 ## How it works
 
-`claude/` mirrors `~/.claude`. The installer symlinks each top-level entry in it into `~/.claude`, so edits made on the machine (including ones Claude Code writes itself, like `/model` saving a default) show up as git diffs here. Anything already in `~/.claude` that would be replaced is moved to `~/.claude/backups/bepis-<timestamp>/` first.
+`claude/` mirrors `~/.claude`, and **this repo is the source of truth**: change things here (usually by asking Claude Code in a session), then run `./install.sh` or `scripts/sync.sh` to copy them into `~/.claude`. Nothing is symlinked, so settings Claude Code writes itself (like the model picked with `/model`) stay on the machine and never dirty the repo.
+
+How files are copied:
+- Directories (`skills/`, `commands/`, ...): repo files are copied over; files that exist only on the machine are left alone. Nothing is ever deleted, so removing something from the repo does not remove it from `~/.claude`.
+- `settings.json`: deep-merged. Repo values win; keys only the machine has (e.g. `model`) are kept. Keep machine-specific keys out of the repo file.
+- Anything that would be overwritten is backed up to `~/.claude/backups/bepis-<timestamp>/` first.
 
 Credentials, history, sessions, projects and the plugin cache are never touched.
 
@@ -36,7 +41,7 @@ claude/
 plugins/plugins.txt      marketplaces + plugins to install
 scripts/
   deps.sh                install git, jq, claude CLI if missing
-  link.sh                symlink claude/* into ~/.claude
+  sync.sh                copy claude/* into ~/.claude (merge settings.json)
   plugins.sh             add marketplaces, install plugins
   doctor.sh              check links, tools, settings, status line
 ```
@@ -51,9 +56,9 @@ scripts/
 
 ## Adding things
 
-- **Skill**: create `claude/skills/<name>/SKILL.md` (or `claude plugin init <name>`, which writes into the linked `~/.claude/skills`).
-- **Slash command / agent / output style**: drop a `.md` file into the matching folder.
+- **Skill**: create `claude/skills/<name>/SKILL.md`, then run `scripts/sync.sh`.
+- **Slash command / agent / output style**: drop a `.md` file into the matching folder, then sync.
 - **Plugin**: add `plugin <name>@<marketplace>` to `plugins/plugins.txt`, then run `scripts/plugins.sh`.
-- **New top-level item in `~/.claude`** (e.g. `CLAUDE.md`, `keybindings.json`): put it in `claude/` and run `scripts/link.sh`.
+- **New top-level item in `~/.claude`** (e.g. `CLAUDE.md`, `keybindings.json`): put it in `claude/` and sync.
 
-Run `scripts/doctor.sh` any time to check everything is wired up.
+Run `scripts/doctor.sh` any time to check `~/.claude` matches the repo.
