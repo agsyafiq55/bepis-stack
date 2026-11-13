@@ -1,0 +1,11 @@
+# Plugins installed by scripts/plugins.sh. One entry per line:
+#   marketplace <github-owner/repo | url | path>
+#   plugin <name>@<marketplace-name>
+# Lines starting with # are ignored.
+
+marketplace anthropics/claude-plugins-official
+
+# Examples (uncomment to install):
+# plugin github@claude-plugins-official
+# plugin context7@claude-plugins-official
+# plugin playwright@claude-plugins-official
